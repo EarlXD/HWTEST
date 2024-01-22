@@ -18,33 +18,33 @@ def read_and_prepare_df(path):
 def format_table(table, currency_state, cur_kzt_usd):
     table['cost'] = table['cost'].round(2)
     table['cost_nds'] = table['cost'] * 1.12
-    table['CPC'] = table['cost'] / table['conversions']
-    table['CTR'] = table['clicks'] / table['impressions'] * 100
+    table['cost_per_conversion'] = table['cost'] / table['conversions']
+    table['ctr'] = table['clicks'] / table['impressions'] * 100
     table['avr_cost_per_click'] = table['cost']/table['clicks']
     table['CR'] = table['conversions'] / table['unit'] * 100
     
     if currency_state == 'USD':
         table['cost'] = table['cost'].apply(lambda x: "${:,.1f}".format((x)))
-        table['CPC'] = table['CPC'].apply(lambda x: "${:,.1f}".format((x)))
+        table['cost_per_conversion'] = table['cost_per_conversion'].apply(lambda x: "${:,.1f}".format((x)))
         table['avr_cost_per_click'] = table['avr_cost_per_click'].apply(lambda x: "${:,.2f}".format((x)))
         table['cost_nds'] = table['cost_nds'].apply(lambda x: "${:,.2f}".format((x)))
     else:
         table['cost'] = table['cost'].apply(lambda x: "₸{:,.1f}".format((x*cur_kzt_usd)))
-        table['CPC'] = table['CPC'].apply(lambda x: "₸{:,.1f}".format((x*cur_kzt_usd)))
+        table['cost_per_conversion'] = table['cost_per_conversion'].apply(lambda x: "₸{:,.1f}".format((x*cur_kzt_usd)))
         table['avr_cost_per_click'] = table['avr_cost_per_click'].apply(lambda x: "₸{:,.1f}".format((x*cur_kzt_usd)))
         table['cost_nds'] = table['cost_nds'].apply(lambda x: "₸{:,.1f}".format((x*cur_kzt_usd)))
     
     table['impressions'] = table['impressions'].apply(lambda x: "{:,.0f}".format((x)))
     table['clicks'] = table['clicks'].apply(lambda x: "{:,.0f}".format((x)))
-    table['CTR'] = table['CTR'].apply(lambda x: "{:,.2f}%".format((x)))
+    table['ctr'] = table['ctr'].apply(lambda x: "{:,.2f}%".format((x)))
     table['CR'] = table['CR'].apply(lambda x: "{:,.2f}%".format((x)))
-    
+    table = table.drop(columns='unit')
     table = table.replace('$nan', np.NaN)
     table = table.replace('₸nan', np.NaN)
     table = table.replace('nan%', np.NaN)
-    # table = table[['Клиент', 'Платформа', 'Показы', 'Клики', 'CTR',
-    #            'Сред. цена за клик', 'Расходы', 'Расходы с НДС',
-    #            'Охват', 'Частота', 'Конверсии', 'CR', 'CPC']]
+    table = table[['client', 'channel', 'impressions', 'clicks', 'cost',
+               'cost_nds', 'ctr', 'conversions',
+               'avr_cost_per_click', 'frequency', 'reach', 'CR', 'cost_per_conversion']]
     
     return table
 
@@ -58,13 +58,16 @@ rename_dict = {'channel':'Платформа',
                'impressions': 'Показы факт',
                'clicks': 'Клики факт',
                'cost': 'Расходы факт',
+               'cost_nds': 'Расходы с НДС',
                'ctr': 'CTR факт',
                'conversions': 'Конверсии факт',
-               'cost_per_conversion': 'CPC факт',
+               'cost_per_conversion': 'CPA факт',
                'date': 'ДАТА',
                'client': 'Клиент',
                'reach': 'Охват факт',
-               'frequency': 'Частота факт'}
+               'frequency': 'Частота факт',
+               'avr_cost_per_click': 'CPC факт'
+               }
 
 aggregate_dict = {'impressions': 'sum',
                   'clicks': 'sum',
@@ -107,8 +110,8 @@ rename_plan_fact = {'client': 'Клиент',
                     'clicks': 'Клики факт',
                     'clicks_plan': 'Клики план',
                     'clicks_perc': 'Клики, %',
-                    'ctr': 'CTR факт',
-                    'ctr_plan': 'CTR план',
+                    'ctr': 'CTR факт %',
+                    'ctr_plan': 'CTR план %',
                     'conversions': 'Конверсии факт',
                     'conversions_ga_plan': 'Конверсии план',
                     'conversions_perc': 'Конверсии, %',
@@ -119,4 +122,14 @@ rename_plan_fact = {'client': 'Клиент',
                     'CPM_plan_USD': 'CPM план',
                     'CPM_perc': 'CPM, %',
                     'start_date': 'Начало',
-                    'end_date': 'Окончание'}
+                    'end_date': 'Окончание',
+                    'cost': 'Расходы факт',
+                    'cost_exVAT_USD': 'Расходы план', 
+                    'percent': 'Общий процент'}
+
+num_format = ['Показы факт', 'Показы план', 'Клики факт', 'Клики план', 
+ 'Конверсии факт', 'Конверсии план', 'Охват факт', 'Охват план']
+
+num_format_perc = ['Показы, %', 'Клики, %', 'Конверсии, %', 'Охват, %', 'Общий процент', 'CTR факт %', 'CTR план %', 'CPM, %']
+
+nun_format_money = ['Расходы факт', 'Расходы план', 'CPM план', 'CPM факт']

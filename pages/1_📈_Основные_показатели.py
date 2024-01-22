@@ -8,7 +8,7 @@ from plotly.subplots import make_subplots
 
 st.set_page_config(layout="wide")
 
-df_mp, df_api = read_and_prepare_df('')
+df_mp, df_api = read_and_prepare_df('E:/work/strlit/')
 
 with st.sidebar:
     managers = st.multiselect('Выбор специалиста',
@@ -58,7 +58,7 @@ if len(clients) == 1:
     metric1 = st.multiselect('Выбор метрики', ['Клики факт', 'Показы факт',
                                                'Расходы факт', 'CTR факт',
                                                'Конверсии факт', 'Охват факт',
-                                               'Частота факт', 'CPC факт'],
+                                               'Частота факт', 'CPA факт'],
                              default=['Показы факт', 'Клики факт'],
                              max_selections=2)
     fig = make_subplots(specs=[[{"secondary_y": True}]])
@@ -74,8 +74,8 @@ if len(clients) == 1:
     metric2 = st.multiselect('Выбор метрики', ['Клики факт', 'Показы факт',
                                                'Расходы факт', 'CTR факт',
                                                'Конверсии факт', 'Охват факт',
-                                               'Частота факт', 'CPC факт'],
-                             default=['Расходы факт', 'CPC факт'],
+                                               'Частота факт', 'CPA факт'],
+                             default=['Расходы факт', 'CPA факт'],
                              max_selections=2)
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     if len(metric2) > 0:
