@@ -1,0 +1,1 @@
+path = 'E:/work/strlit/'

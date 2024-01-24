@@ -2,13 +2,14 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 from func_data import *
+from path_lib import *
 import datetime
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 st.set_page_config(layout="wide")
 
-df_mp, df_api = read_and_prepare_df('E:/work/strlit/')
+df_mp, df_api = read_and_prepare_df(path)
 
 with st.sidebar:
     managers = st.multiselect('Выбор специалиста',

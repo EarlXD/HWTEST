@@ -79,6 +79,18 @@ aggregate_dict = {'impressions': 'sum',
                   'frequency': 'mean',
                   'reach': 'sum'}
 
+aggregate_dict_campaign = {'impressions': 'sum',
+                  'clicks': 'sum',
+                  'cost': 'sum',
+                  'ctr': 'sum',
+                  'conversions': 'sum',
+                  'cost_per_conversion': 'sum',
+                  'unit': 'sum',
+                  'frequency': 'mean',
+                  'reach': 'sum',
+                  'campaign_id_uniq': 'first',
+                  'campaign_name': 'first'}
+
 rename_mp_df_dict = {'campaign_id': 'campaign_id_uniq',
                      'Unit cost, excluding VAT, ₸/PLAN': 'unit_cost_exVAT_KZT',
                      'Unit cost, excluding VAT, $/PLAN': 'unit_cost_exVAT_USD',
@@ -127,9 +139,31 @@ rename_plan_fact = {'client': 'Клиент',
                     'cost_exVAT_USD': 'Расходы план', 
                     'percent': 'Общий процент'}
 
+rename_camp = {'client': 'Клиент',
+                    'mp_name': 'Медиаплан',
+                    'channel': 'Платформа',
+                    'source': 'Тип кампании',
+                    'campaign_name': 'Название кампании',
+                    'impressions': 'Показы факт',
+                    'clicks': 'Клики факт',
+                    'ctr': 'CTR факт %',
+                    'conversions': 'Конверсии факт',
+                    'reach': 'Охват факт',
+                    'CPM': 'CPM факт',
+                    'start_date': 'Начало',
+                    'end_date': 'Окончание',
+                    'cost': 'Расходы факт'
+                    }
+
 num_format = ['Показы факт', 'Показы план', 'Клики факт', 'Клики план', 
  'Конверсии факт', 'Конверсии план', 'Охват факт', 'Охват план']
 
+num_format_camp = ['Показы факт', 'Клики факт', 'Конверсии факт', 'Охват факт']
+
 num_format_perc = ['Показы, %', 'Клики, %', 'Конверсии, %', 'Охват, %', 'Общий процент', 'CTR факт %', 'CTR план %', 'CPM, %']
 
-nun_format_money = ['Расходы факт', 'Расходы план', 'CPM план', 'CPM факт']
+num_format_perc_camp = ['CTR факт %']
+
+num_format_money = ['Расходы факт', 'Расходы план', 'CPM план', 'CPM факт']
+
+num_format_money_camp = ['Расходы факт', 'CPM факт']
