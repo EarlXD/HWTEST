@@ -34,6 +34,12 @@ with st.sidebar:
                               placeholder='источник')
     filtered_mp_df = filtered_mp_df[filtered_mp_df['channel'].isin(channels)]
 
+    campaigns = st.multiselect('Выбор кампании',
+                              filtered_mp_df['campaign_id_uniq'].unique(),
+                              default=filtered_mp_df['campaign_id_uniq'].unique(),
+                              placeholder='кампания')
+    filtered_mp_df = filtered_mp_df[filtered_mp_df['campaign_id_uniq'].isin(campaigns)]
+
     first_date = st.date_input('Начало периода', value=df_mp['start_date'].min())
     end_date = st.date_input('Конец периода', value=datetime.date.today())
 
@@ -44,7 +50,7 @@ uniq_ids = filtered_mp_df['campaign_id_uniq'].unique()
 filtered_api_df = df_api[df_api['campaign_id_uniq'].isin(uniq_ids)]
 filtered_api_df = filtered_api_df[filtered_api_df['date'] >= first_date]
 filtered_api_df = filtered_api_df[filtered_api_df['date'] <= end_date]
-filtered_api_df = filtered_api_df.groupby('campaign_id_uniq').aggregate(aggregate_dict).reset_index()
+filtered_api_df = filtered_api_df.groupby('campaign_id').aggregate(aggregate_dict_campaign).reset_index()
 filtered_api_df = filtered_api_df.merge(filtered_mp_df, how='right')
 
 filtered_api_df['impressions_perc'] = (filtered_api_df['impressions'] / filtered_api_df['impressions_plan']*100).round(1)
@@ -65,47 +71,37 @@ filtered_api_df['today'] = pd.to_datetime(filtered_api_df['today'])
 filtered_api_df['days'] = (filtered_api_df['today'] - filtered_api_df['start_date']).dt.days
 filtered_api_df['percent'] = filtered_api_df['days']/filtered_api_df['planning_period'] * 100
 filtered_api_df.loc[filtered_api_df['percent'] > 100, 'percent'] = 100
+filtered_api_df['campaign_id'] = filtered_api_df['campaign_id'].astype('str')
 
 filtered_api_df = filtered_api_df[['client', 'mp_name',
-                                   'start_date', 'end_date', 'percent',
+                                   'start_date', 'end_date',
                                    'channel', 'source',
-                                   'impressions', 'impressions_plan', 'impressions_perc',
-                                   'clicks', 'clicks_plan', 'clicks_perc',
-                                   'ctr', 'ctr_plan',
-                                   'cost', 'cost_exVAT_USD',
-                                   'conversions', 'conversions_ga_plan', 'conversions_perc',
-                                   'reach', 'reach_plan', 'reach_perc',
-                                   'CPM', 'CPM_plan_USD', 'CPM_perc',
+                                   'campaign_name',
+                                   'campaign_id',
+                                   'impressions',
+                                   'clicks',
+                                   'ctr',
+                                   'cost',
+                                   'conversions',
+                                   'reach',
+                                   'CPM',
                                    ]]
 # filtered_api_df = format_plan_fact_table(filtered_api_df, currency_state, cur_kzt_usd)
 filtered_api_df['end_date'] = filtered_api_df['end_date'].dt.strftime('%d/%m/%Y')
 filtered_api_df['start_date'] = filtered_api_df['start_date'].dt.strftime('%d/%m/%Y')
-filtered_api_df = filtered_api_df.rename(columns=rename_plan_fact)
+filtered_api_df = filtered_api_df.rename(columns=rename_camp)
 # filtered_api_df = filtered_api_df.round(2)
 
 # df.apply(lambda x: ['0' if col_i == 2 else '1' for col_i, value in enumerate(x)], axis = 1)
 # filtered_api_df = filtered_api_df.rename(columns=rename_dict)
 filtered_api_df = filtered_api_df.fillna(0)
 st.dataframe(
+# st.table(
                 # filtered_api_df,
                 filtered_api_df.style
-                .apply(lambda x: ['background-color: #5eae76; opacity: 0.1' if x.name == 'Показы, %' and value > filtered_api_df.iloc[col_i]['Общий процент'] else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: #de796e; opacity: 0.1' if x.name == 'Показы, %' and value < filtered_api_df.iloc[col_i]['Общий процент'] else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: white; opacity: 0.1' if x.name == 'Показы, %' and value == 0 else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: #5eae76; opacity: 0.1' if x.name == 'Клики, %' and value > filtered_api_df.iloc[col_i]['Общий процент'] else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: #de796e; opacity: 0.1' if x.name == 'Клики, %' and value < filtered_api_df.iloc[col_i]['Общий процент'] else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: white; opacity: 0.1' if x.name == 'Клики, %' and value == 0 else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: #5eae76; opacity: 0.1' if x.name == 'Конверсии, %' and value > filtered_api_df.iloc[col_i]['Общий процент'] else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: #de796e; opacity: 0.1' if x.name == 'Конверсии, %' and value < filtered_api_df.iloc[col_i]['Общий процент'] else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: white; opacity: 0.1' if x.name == 'Конверсии, %' and value == 0 else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: #5eae76; opacity: 0.1' if x.name == 'Охват, %' and value > filtered_api_df.iloc[col_i]['Общий процент'] else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: #de796e; opacity: 0.1' if x.name == 'Охват, %' and value < filtered_api_df.iloc[col_i]['Общий процент'] else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: white; opacity: 0.1' if x.name == 'Охват, %' and value == 0 else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: #5eae76; opacity: 0.1' if x.name == 'CPM, %' and value > filtered_api_df.iloc[col_i]['Общий процент'] else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: #de796e; opacity: 0.1' if x.name == 'CPM, %' and value < filtered_api_df.iloc[col_i]['Общий процент'] else '' for col_i, value in enumerate(x)], axis = 0)
-                .apply(lambda x: ['background-color: white; opacity: 0.1' if x.name == 'CPM, %' and value == 0 else '' for col_i, value in enumerate(x)], axis = 0)
-                .format(precision=0, thousands=' ', subset=num_format)
-                .format('{:.1f}%', thousands=' ', subset=num_format_perc)
-                .format('$ {:.1f}', thousands=' ', subset=num_format_money),
-
-             width=2000, hide_index=True)
+                .format(precision=0, thousands=' ', subset=num_format_camp)
+                .format('{:.1f}%', thousands=' ', subset=num_format_perc_camp)
+                .format('$ {:.1f}', thousands=' ', subset=num_format_money_camp),
+             width=2000,
+             hide_index=True
+             )

@@ -8,7 +8,7 @@ from plotly.subplots import make_subplots
 
 st.set_page_config(layout="wide")
 
-df_mp, df_api = read_and_prepare_df('')
+df_mp, df_api = read_and_prepare_df('E:/work/strlit/')
 
 with st.sidebar:
     managers = st.multiselect('Выбор специалиста',
