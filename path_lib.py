@@ -1,1 +1,1 @@
-path = 'E:/work/strlit/'
+path = ''
