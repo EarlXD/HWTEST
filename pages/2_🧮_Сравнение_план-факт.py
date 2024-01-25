@@ -87,7 +87,8 @@ filtered_api_df = filtered_api_df.rename(columns=rename_plan_fact)
 # df.apply(lambda x: ['0' if col_i == 2 else '1' for col_i, value in enumerate(x)], axis = 1)
 # filtered_api_df = filtered_api_df.rename(columns=rename_dict)
 filtered_api_df = filtered_api_df.fillna(0)
-st.dataframe(
+#st.dataframe(
+st.table(
                 # filtered_api_df,
                 filtered_api_df.style
                 .apply(lambda x: ['background-color: #5eae76; opacity: 0.1' if x.name == 'Показы, %' and value > filtered_api_df.iloc[col_i]['Общий процент'] else '' for col_i, value in enumerate(x)], axis = 0)
@@ -109,4 +110,6 @@ st.dataframe(
                 .format('{:.1f}%', thousands=' ', subset=num_format_perc)
                 .format('$ {:.1f}', thousands=' ', subset=num_format_money),
 
-             width=2000, hide_index=True)
+             #width=2000,
+             #hide_index=True
+             )
