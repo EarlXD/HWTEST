@@ -96,13 +96,13 @@ filtered_api_df = filtered_api_df.rename(columns=rename_camp)
 # df.apply(lambda x: ['0' if col_i == 2 else '1' for col_i, value in enumerate(x)], axis = 1)
 # filtered_api_df = filtered_api_df.rename(columns=rename_dict)
 filtered_api_df = filtered_api_df.fillna(0)
-st.dataframe(
-# st.table(
+#st.dataframe(
+st.table(
                 # filtered_api_df,
                 filtered_api_df.style
                 .format(precision=0, thousands=' ', subset=num_format_camp)
                 .format('{:.1f}%', thousands=' ', subset=num_format_perc_camp)
                 .format('$ {:.1f}', thousands=' ', subset=num_format_money_camp),
-             width=2000,
-             hide_index=True
+            # width=2000,
+            # hide_index=True
              )
