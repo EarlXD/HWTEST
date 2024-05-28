@@ -27,8 +27,6 @@ with st.sidebar:
                               )
     if st.button('Сохранить медиаплан'):
         save_new_mp(df_mp)
-
-    authenticator.logout(location='sidebar')
     
 filtered_df_mp = df_mp[df_mp['manager'].isin(managers)]
 
