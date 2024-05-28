@@ -7,8 +7,6 @@ import datetime
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import warnings
-import yaml
-from yaml.loader import SafeLoader
 
 warnings.simplefilter("ignore", category=FutureWarning)
 st.set_page_config(layout="wide")
