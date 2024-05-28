@@ -6,39 +6,10 @@ from path_lib import *
 import datetime
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import streamlit_authenticator as stauth
-import yaml
-from yaml.loader import SafeLoader
 
 st.set_page_config(layout="wide")
 
-
-with open('config.yaml') as file:
-    config = yaml.load(file, Loader=SafeLoader)
-
-authenticator = stauth.Authenticate(
-    config['credentials'],
-    config['cookie']['name'],
-    config['cookie']['key'],
-    config['cookie']['expiry_days'],
-    config['preauthorized'])
-
-if st.session_state["authentication_status"]:
-    pass
-elif st.session_state["authentication_status"] is False:
-    authenticator.login(location='sidebar')
-    st.error('Username/password is incorrect')
-elif st.session_state["authentication_status"] is None:
-    authenticator.login(location='sidebar')
-    
-
-if 'authentication_status' not in st.session_state:
-    st.stop()
-if st.session_state['authentication_status'] == None or st.session_state['authentication_status'] == False:
-    st.stop()
-
-
-df_mp, df_api = read_and_prepare_df(path)
+df_mp, df_api = read_and_prepare_df('')
 
 df_mp['start_date'] = pd.to_datetime(df_mp['start_date'])
 df_mp['end_date'] = pd.to_datetime(df_mp['end_date'])
@@ -111,8 +82,6 @@ with st.sidebar:
 
     currency_state = st.radio('Валюта', ['USD', 'KZT'])
     cur_kzt_usd = st.number_input('KZT/USD', value=475)
-    
-    authenticator.logout(location='sidebar')
 
 if len(managers) == 0:
     st.stop()
