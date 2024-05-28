@@ -12,7 +12,7 @@ warnings.simplefilter("ignore", category=FutureWarning)
 st.set_page_config(layout="wide")
 
 
-df_mp, df_api = read_and_prepare_df(path)
+df_mp, df_api = read_and_prepare_df()
 
 with st.sidebar:
     
