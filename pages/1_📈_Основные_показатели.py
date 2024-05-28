@@ -40,8 +40,6 @@ with st.sidebar:
     currency_state = st.radio('Валюта', ['USD', 'KZT'])
     cur_kzt_usd = st.number_input('KZT/USD', value=475)
     
-    authenticator.logout(location='sidebar')
-
 uniq_ids = filtered_mp_df['campaign_id_uniq'].unique()
 filtered_api_df = df_api[df_api['campaign_id_uniq'].isin(uniq_ids)]
 filtered_api_df = filtered_api_df[filtered_api_df['date'] >= first_date]
