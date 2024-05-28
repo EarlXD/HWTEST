@@ -6,7 +6,6 @@ from path_lib import *
 import datetime
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import ad_functions_nova
 from itertools import chain
 
 st.set_page_config(layout="wide")
